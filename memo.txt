@@ -4,6 +4,27 @@ App: 複数のStackの依存関係を管理
 Stack: CFのスタックに該当。デプロイはStack単位である。
 Construct: Stackで作成されるAWSリソース
 
+## CDKのよく使うコマンド
+```
+//スタック一覧表示
+cdk list
+
+//CloudFormationテンプレートの確認
+cdk synth [stack name]
+
+//Deploy用のバケット作成(初回のみ)
+cdk bootstrap --profile xxxxxxx
+
+//Deploy
+cdk deploy [stack name] --profile xxxxxxx
+
+//Destroy
+cdk destroy [stack name] --profile xxxxxxx
+
+//ローカルとデプロイのリソースの差分を確認
+cdk diff [stack name] --profile xxxxxxx
+```
+
 ## install aws cdk
 ```
 nodenv install 20.2.0
