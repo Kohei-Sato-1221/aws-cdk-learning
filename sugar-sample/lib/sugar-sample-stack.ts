@@ -1,19 +1,16 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import * as sns from 'aws-cdk-lib/aws-sns';
-import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
-import { Construct } from 'constructs';
+import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as s3 from "aws-cdk-lib/aws-s3";
 
-export class SugarSampleStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+export class SugarSampleStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'SugarSampleQueue', {
-      visibilityTimeout: Duration.seconds(300)
+    const inputBucket = new s3.Bucket(this, "SugarSampleInputBucket", {
+      bucketName: "sugar-sample-input-bucket",
     });
-
-    const topic = new sns.Topic(this, 'SugarSampleTopic');
-
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    const outputBucket = new s3.Bucket(this, "SugarSampleOutputBucket", {
+      bucketName: "sugar-sample-output-bucket",
+    });
   }
 }
