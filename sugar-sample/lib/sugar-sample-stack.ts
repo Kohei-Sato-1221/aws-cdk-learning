@@ -5,6 +5,9 @@ import { Topic } from "aws-cdk-lib/aws-sns";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
+import * as cloudtrail from "aws-cdk-lib/aws-cloudtrail";
 
 export class SugarSampleStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -31,5 +34,39 @@ export class SugarSampleStack extends cdk.Stack {
       definition: successTask,
       timeout: cdk.Duration.minutes(30),
     });
+
+    const rule = new events.Rule(this, "SugarSampleRule", {
+      eventPattern: {
+        source: ["aws.s3"],
+        detailType: ["AWS API Call via CloudTrail"],
+        detail: {
+          eventSource: ["s3.amazonaws.com"],
+          eventName: ["PutObject"],
+          requestParameters: {
+            bucketName: [inputBucket.bucketName],
+          },
+        },
+      },
+    });
+    const target = new targets.SfnStateMachine(stateMachine);
+    rule.addTarget(target);
+
+    const logBucket = new s3.Bucket(this, "SugarSampleLogBucket", {
+      bucketName: "sugar-sample-log-bucket",
+    });
+
+    const trail = new cloudtrail.Trail(this, "SugarSampleTrail", {
+      bucket: logBucket,
+    });
+    trail.addS3EventSelector(
+      [
+        {
+          bucket: inputBucket,
+        },
+      ],
+      {
+        readWriteType: cloudtrail.ReadWriteType.WRITE_ONLY,
+      }
+    );
   }
 }
