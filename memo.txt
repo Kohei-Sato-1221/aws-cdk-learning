@@ -25,7 +25,7 @@ cdk destroy [stack name] --profile xxxxxxx
 cdk diff [stack name] --profile xxxxxxx
 ```
 
-## install aws cdk
+## install aws cdksa
 ```
 nodenv install 20.2.0
 nodenv local 20.2.0
@@ -51,4 +51,10 @@ npm install --save-dev eslint
 npx eslint --init
 npm install --save-dev prettier eslint-config-prettier
 //.eslintrc.jsに Prettier の項目を追加する
+```
+
+## MEMO
+```
+//create S3 bucket
+npm install @aws-cdk/aws-s3
 ```
