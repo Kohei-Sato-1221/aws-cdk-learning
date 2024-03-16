@@ -25,22 +25,13 @@ export class EcsAppSampleStack extends Stack {
     ];
 
     const vpc = NewVPC(this, "EcsAppVPC", vpcCidr);
-
     const subnets = [];
     subnetInfo.forEach((i) => {
       const subnet = NewSubnet(
-        this,
-        i.az,
-        vpc,
-        i.cidr,
-        `EcsApp${i.isPublic ? "Public" : "Private"}Subnet${i.key}`,
-        i.isPublic
+        this, i.az, vpc, i.cidr, `EcsApp${i.isPublic ? "Public" : "Private"}Subnet${i.key}`,i.isPublic
       );
       subnets.push(subnet);
     });
-
-    new CfnOutput(this, "Environment:", {
-      value: environment,
-    });
+    new CfnOutput(this, "Environment:", { value: environment });
   }
 }
